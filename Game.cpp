@@ -39,9 +39,34 @@ void printUI(){
     cout << "n: new game , w: up, s: down, d:right, a:left, q: quit \n";
 }
 
+bool canDoMove(int line, int column, int nextLine, int nextColumn){
+    if(nextLine < 0 || nextColumn < 0 || nextLine >= 4 || nextColumn >= 4 
+    || (board[line][column] != board[nextLine][nextColumn] && board[nextLine][nextColumn] != 0))
+        return false; 
+    return true; 
+}
+
 void applyMove(int direction){
-    //for (int i = 0; i < 4; i++) 
-        //for (int j = 0; j < 4; j++)    
+    int startLine = 0, startColumn = 0, lineStep = 1, columnStep = 1; 
+    if (direction == 0){
+        startLine = 3; 
+        lineStep = -1; 
+    } 
+
+    if (direction == 1){
+        startColumn = 3; 
+        columnStep = -1; 
+    } 
+    int movePossible = 0;
+    for (int i = startLine; i >= 0 && i <4; i+= lineStep) 
+        for (int j = startColumn; j>=0 && j < 4; j+= columnStep) {
+            int nextI = i + directionLine[direction], nextJ = j + directionCol[direction];
+            if(canDoMove(i,j,nextI,nextJ)) {
+                board[nextI][nextJ] += board[i][j]; 
+                board[i][j] = 0;
+                movePossible = 1;
+            }
+        }   
 }
 
 int main()
@@ -64,7 +89,6 @@ int main()
             break;
         else {
             int currentDirection = commandToDir[command];
-            cout << currentDirection << "\n"; 
             applyMove(currentDirection);
         } 
     }
